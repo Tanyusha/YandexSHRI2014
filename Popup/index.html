@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Popup</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+<div class="jumbotron">
+    <h1>Задание 1</h1>
+
+    <p>Сверстайте всплывающее окно (попап) — элемент, который показывается поверх содержимого веб-страницы. Он
+        должен всегда находиться в её центре, при этом размер контента может меняться. Предложите максимальное
+        количество решений и объясните, какие у каждого из них есть недостатки и преимущества. Результат пришлите в
+        виде ссылки на GitHub.
+    </p>
+</div>
+<div class="container">
+
+    <div class="row">
+        <div class="methods col-sm-6 col-md-4">
+            <p>Способ 1</p>
+            <button id="method1" class="btn btn-primary button">Посмотреть</button>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <p>Способ 2</p>
+            <button id="method2" class="btn btn-primary button">Посмотреть</button>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <p>Способ 3</p>
+            <button id="method3" class="btn btn-primary button" data-toggle="modal" data-target="#myModal">Посмотреть
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="popup popup1 popup-hide">
+    <div class="popup-shadow popup1-shadow"></div>
+    <div class="popup-content popup1-content">
+        <h2>Способ 1</h2>
+
+        <p>Данный способ реализован с использованием CSS. JavaScript используетя только для открытия и закрытия окна.
+            Для отцентровки окна используется свойство display:flex в сочетании со свойством margin:auto.</p>
+
+        <p>Преимущества данного способа: простота реализации, высокая скорость работы, которая преобретается за счет
+            того, что CSS работает быстрее, чем JavaScript. </p>
+
+        <p>Основной недостаток данного способа заключается в том, что он поддерживается только современными
+            браузерами.</p>
+    </div>
+    <div class="popup-close">
+        <span class="glyphicon glyphicon-remove"></span>
+    </div>
+</div>
+<div class="popup popup2 popup-hide">
+    <div class="popup-shadow popup2-shadow"></div>
+    <div class="popup-content popup2-content">
+        <h2>Способ 2</h2>
+
+        <p>Данный способ реализован с использованием JavaScript. Спомощью него осуществляется отцентровка окна и рассчет
+            его размеров.</p>
+
+        <p>Преимущества данного способа: кроссбраузерность </p>
+
+        <p>Недостатки: медленная скорость работы</p>
+    </div>
+    <div class="popup-close">
+        <span class="glyphicon glyphicon-remove"></span>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">Способ 3</h4>
+            </div>
+            <div class="modal-body">
+                <p>Данный способ реализован с помощью фреймворка Bootstrap.</p>
+
+                <p>Преимущества данного способа: простота реализации, кроссбраузерность. При использовании данного
+                    способа можно быть уверенным, что все будет работать правильно, поскольку код был написан опытными
+                    разработчиками twitter. </p>
+
+                <p>Недостатки: - </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+</body>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="script.js"></script>
+</html>
