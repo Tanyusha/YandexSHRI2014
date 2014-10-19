@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Equalizr</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <style>
+        .equalizer-wrapper {
+            float: left;
+            margin: 0 20px 20px 0;
+        }
+
+        .equalizer {
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .equalizer.small {
+            width: 100px;
+            height: 100px;
+        }
+
+        .equalizer.normal {
+            width: 200px;
+            height: 200px;
+        }
+
+        .equalizer.big {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+    <script>
+        function setEqualizer(selector, timeout, colWidth) {
+            if (!colWidth) {
+                colWidth = 1;
+            }
+
+            // cache selector
+            var $selector = $(selector);
+
+            $selector.css({
+                verticalAlign: 'bottom',
+                lineHeight: $selector.height() + 'px'
+            });
+
+            // Кол-во столбиков
+            var colQuantity = Math.ceil($selector.width() / colWidth);
+            var cols = new Array(colQuantity);
+            for (var i = 0; i < colQuantity; i++) {
+                var span = $('<span/>').css({
+                    verticalAlign: 'bottom',
+                    display: 'inline-block',
+
+                    fontSize: 0,
+                    lineHeight: 0,
+
+                    width: colWidth,
+                    background: 'pink',
+                    borderTop: '2px solid red'
+                });
+                $selector.append(span);
+                cols[i] = span;
+                console.log(span);
+            }
+            var $cols = $selector.children();
+            var height = $selector.height();
+            console.log($cols);
+            run_equalizer(height, timeout, $cols, cols);
+        }
+
+        function run_equalizer(height, timeout, $cols, cols) {
+            var _animations_counter =  cols.length;
+            function after_end_animations() {
+                _animations_counter--;
+                if (_animations_counter === 0)
+                {
+                    // timeout is necessary for end animation
+                    setTimeout(function(){
+                        run_equalizer(height, timeout, $cols, cols);
+                    }, 0);
+                }
+            }
+            $.each(cols, function( i, col_i_value ) {
+                var colHeight = Math.round(height * Math.random());
+                col_i_value.animate({height: colHeight},timeout,'linear', function(){
+                    col_i_value.animate({height: height / 2},timeout,'linear', after_end_animations);
+                });
+            });
+
+        }
+
+        window.onload = function () {
+            setEqualizer('#eq_1 .equalizer', 1000, 2);
+            setEqualizer('#eq_2 .equalizer', 1000, 2);
+            setEqualizer('#eq_3 .equalizer', 1000, 2);
+        }
+    </script>
+</head>
+<body>
+<h1>Equalizers</h1>
+
+<div id="eq_1" class="equalizer-wrapper">
+    <h2>First</h2>
+
+    <div class="equalizer small"></div>
+</div>
+<div id="eq_2" class="equalizer-wrapper">
+    <h2>Second</h2>
+
+    <div class="equalizer normal"></div>
+</div>
+<div id="eq_3" class="equalizer-wrapper">
+    <h2>Third</h2>
+
+    <div class="equalizer big"></div>
+</div>
+</body>
+</html>
