@@ -1,22 +1,60 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<body>
+<body style="margin: 0">
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script>
+    function max(a, b) {
+        return (a > b) ? a : b;
+    }
 
-    var width = 960,
-            height = 500;
+    function min(a, b) {
+        return (a > b) ? b : a;
+    }
 
-    var nodes = d3.range(200).map(function() { return {radius: Math.random() * 12 + 4}; }),
-            root = nodes[0],
-            color = d3.hsl(function() { return {color: Math.random() * 12 + 4}; });
+    function abs_min(a, a_min_abs) {
+        if (a_min_abs < 0) a_min_abs = -a_min_abs;
+
+        if (a < 0) {
+            return max(a, -a_min_abs);
+        } else {
+            return min(a, a_min_abs);
+        }
+    }
+
+    function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function animateColor(node, from, to) {
+        var dt = randomInt(300, 3000);
+        node.transition().duration(dt).style('fill', to).each('end', function () {
+            animateColor(d3.select(this), to, from);
+        })
+    }
+
+    var width = $(window).width(),
+            height = $(window).height();
+
+    var nodes = d3.range(200).map(function () {
+                return {
+                    radius: randomInt(4, 12),
+                    x: randomInt(10, width -10),
+                    y: randomInt(10, height -10)
+                };
+            }),
+            root = nodes[0];
 
     root.radius = 0;
     root.fixed = true;
 
+
     var force = d3.layout.force()
-            .gravity(0.05)
-            .charge(function(d, i) { return i ? 0 : -2000; })
+            .gravity(0.0005)
+            .friction(0.9)
+            .charge(function (d, i) {
+                return i ? 0 : -300;
+            })
             .nodes(nodes)
             .size([width, height]);
 
@@ -29,10 +67,22 @@
     svg.selectAll("circle")
             .data(nodes.slice(1))
             .enter().append("circle")
-            .attr("r", function(d) { return d.radius; })
-            .style("fill", function(d, i) { return color(i % 3); });
+            .attr("r", function (d) {
+                return d.radius;
+            })
+            .attr("cx", function (d) {
+                return d.x
+            })
+            .attr("cy", function (d) {
+                return d.y;
+            })
+            .attr("fill", "yellow")
+            .each(function () {
+                animateColor(d3.select(this), 'yellow', 'red');
+            });
 
-    force.on("tick", function(e) {
+
+    force.on("tick", function (e) {
         var q = d3.geom.quadtree(nodes),
                 i = 0,
                 n = nodes.length;
@@ -40,11 +90,25 @@
         while (++i < n) q.visit(collide(nodes[i]));
 
         svg.selectAll("circle")
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
+                .attr("cx", function (d) {
+//                    console.log(d);
+//                    d.px = abs_min(d.px, 10);
+                    d.x += randomInt(-1, 1) * 0.5;
+                    if (d.x - d.radius < 0) d.x = 0 + d.radius + randomInt(1,10);
+                    if (d.x + d.radius > width) d.x = width - d.radius - randomInt(1,10);
+                    return d.x;
+                })
+                .attr("cy", function (d) {
+                    d.y += randomInt(-1, 1) * 0.5;
+                    if (d.y - d.radius < 0) d.y = 0 + d.radius + randomInt(1,10);
+                    if (d.y + d.radius > height) d.y = height - d.radius - randomInt(1,10);
+
+//                    d.py = abs_min(d.py, 10);
+                    return d.y;
+                });
     });
 
-    svg.on("mousemove", function() {
+    svg.on("mousemove", function () {
         var p1 = d3.mouse(this);
         root.px = p1[0];
         root.py = p1[1];
@@ -52,12 +116,13 @@
     });
 
     function collide(node) {
+//        console.log(node);
         var r = node.radius + 16,
                 nx1 = node.x - r,
                 nx2 = node.x + r,
                 ny1 = node.y - r,
                 ny2 = node.y + r;
-        return function(quad, x1, y1, x2, y2) {
+        return function (quad, x1, y1, x2, y2) {
             if (quad.point && (quad.point !== node)) {
                 var x = node.x - quad.point.x,
                         y = node.y - quad.point.y,
